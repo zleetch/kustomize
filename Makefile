@@ -1,6 +1,6 @@
 .ONESHELL:
 .SHELL := /usr/bin/bash
-.PHONY: deploy remove output
+.PHONY: deploy remove output clean
 
 ROOTPATH=$(shell pwd)
 
@@ -12,17 +12,32 @@ set-env:
 		echo "argument env was not set"; \
 		exit 1; \
 	 fi
+
+set-stack:
 	@if [ -z $(stack) ]; then \
 		echo "argument stack was not set"; \
 		exit 1; \
 	 fi
 
-confirm: set-env
+confirm: set-env set-stack
 	@read -p "Are you sure want to proceed $(OPERATION) for $(stack) in $(env)? [Y/n]" choice && \
 	case "$$choice" in \
 		y|Y ) echo "Proceed $(OPERATION) for $(stack) in $(env)";; \
 		* ) echo "Aborted..."; exit 1;; \
 	esac
+
+confirm-clean: set-stack
+	@read -p "Are you sure want to proceed $(OPERATION) for $(stack)? [Y/n]" choice && \
+	case "$$choice" in \
+		y|Y ) echo "Proceed $(OPERATION) for $(stack)";; \
+		* ) echo "Aborted..."; exit 1;; \
+	esac
+
+
+
+clean: OPERATION="clean"
+clean: confirm-clean ## Clean all charts
+	@rm -rf $(stack)/base/charts
 
 deploy: OPERATION="deploy"
 deploy: confirm ## Deploy the manifest
