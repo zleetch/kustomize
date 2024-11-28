@@ -1,4 +1,0 @@
-configs:
-  cm:
-    create: true
-    kustomize.buildOptions: --enable-helm
