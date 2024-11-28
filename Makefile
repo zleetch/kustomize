@@ -26,18 +26,16 @@ confirm: set-env set-stack
 		* ) echo "Aborted..."; exit 1;; \
 	esac
 
-confirm-clean: set-stack
-	@read -p "Are you sure want to proceed $(OPERATION) for $(stack)? [Y/n]" choice && \
-	case "$$choice" in \
-		y|Y ) echo "Proceed $(OPERATION) for $(stack)";; \
-		* ) echo "Aborted..."; exit 1;; \
-	esac
-
-
+# confirm-clean: set-stack
+#	@read -p "Are you sure want to proceed $(OPERATION) for $(stack)? [Y/n]" choice && \
+#	case "$$choice" in \
+#		y|Y ) echo "Proceed $(OPERATION) for $(stack)";; \
+#		* ) echo "Aborted..."; exit 1;; \
+#	esac
 
 clean: OPERATION="clean"
-clean: confirm-clean ## Clean all charts
-	@rm -rf $(stack)/base/charts
+clean: confirm ## Clean all charts
+	@rm -rf $(stack)/overlays/$(env)/charts
 
 deploy: OPERATION="deploy"
 deploy: confirm ## Deploy the manifest
